@@ -1,21 +1,23 @@
 const { Pool } = require('pg');
 
-const testConnection = async () => {
-	const pool = new Pool({
-		connectionString: 'YOUR_NEON_CONNECTION_STRING',
-		ssl: { rejectUnauthorized: false }
-	});
+const pool = new Pool({
+	connectionString: process.env.DATABASE_URL,
+	ssl: {
+	rejectUnauthorized: false
+	}
+});
 
+module.exports = async (req, res) => {
+
+	let client;
 	try {
-		const client = await pool.connect();
-		console.log("Connected successfully!");
-		await client.query('SELECT 1');
-		client.release();
+		client = await pool.connect();
+		const result = await client.query('SELECT NOW() as now');
+		res.status(200).json(result.rows[0]);
 	} catch (err) {
-		console.error("Connection failed:", err.message); // Capture detailed error
+		console.error(err);
+		res.status(500).json({ error: 'Database connection failed', details: err.message });
 	} finally {
-		await pool.end();
+		if (client) client.release();
 	}
 };
-
-testConnection();
