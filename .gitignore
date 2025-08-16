@@ -1,0 +1,14 @@
+# Exclude node_modules directory
+node_modules/
+
+# Optional common exclusions for Node.js projects:
+.env                # Environment variables
+npm-debug.log*      # NPM debug logs
+yarn-debug.log*     # Yarn debug logs
+yarn-error.log*     # Yarn error logs
+.DS_Store           # macOS folder metadata
+.idea/              # JetBrains IDE config
+.vscode/            # VS Code config
+dist/               # Build output
+coverage/           # Test coverage reports
+*.tmp               # Temporary files
