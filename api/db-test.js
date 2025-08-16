@@ -1,22 +1,21 @@
-import { Pool } from "pg";
+const { Pool } = require('pg');
 
-const pool = new Pool({
-	connectionString: process.env.DATABASE_URL,
-	ssl: { rejectUnauthorized: false, },
-});
+const testConnection = async () => {
+	const pool = new Pool({
+		connectionString: 'YOUR_NEON_CONNECTION_STRING',
+		ssl: { rejectUnauthorized: false }
+	});
 
-export default async function handler(req, res) {
 	try {
 		const client = await pool.connect();
-		const result = await client.query("SELECT NOW()");
+		console.log("Connected successfully!");
+		await client.query('SELECT 1');
 		client.release();
-
-		res.status(200).json({
-		message: "Connected to Neon DB 🚀",
-		time: result.rows[0],
-		});
 	} catch (err) {
-		console.error(err);
-		res.status(500).json({ error: "Database connection failed" });
+		console.error("Connection failed:", err.message); // Capture detailed error
+	} finally {
+		await pool.end();
 	}
-}
+};
+
+testConnection();
